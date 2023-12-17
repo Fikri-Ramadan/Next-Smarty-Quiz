@@ -6,6 +6,12 @@ import { getAuthSession } from '@/lib/nextAuth';
 import { redirect } from 'next/navigation';
 
 type Props = {};
+
+export const metadata = {
+  title: 'Dashboard | Smarty Quiz',
+  description: 'Quiz yourself with AI power',
+};
+
 const Dashboard = async (props: Props) => {
   const session = await getAuthSession();
 
