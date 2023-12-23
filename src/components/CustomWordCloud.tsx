@@ -1,7 +1,9 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import WordCloud from 'react-d3-cloud';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import D3WordCloud from 'react-d3-cloud';
 
 type Props = {};
 
@@ -29,17 +31,32 @@ const fontSizeMapper = (word: { value: number }) => {
 
 const CustomWordCloud = (props: Props) => {
   const theme = useTheme();
+  const router = useRouter();
 
+  const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      setLoading(false);
+    }
+  }, []);
+
+  if (isLoading) {
+    return <>Loading...</>;
+  }
   return (
     <>
-      <WordCloud
+      <D3WordCloud
         data={data}
         height={550}
-        font={'Times'}
+        font="Times"
         fontSize={fontSizeMapper}
         rotate={0}
         padding={10}
         fill={theme.theme === 'dark' ? 'white' : 'black'}
+        onWordClick={(e, d) => {
+          router.push('/quiz?topic=' + d.text);
+        }}
       />
     </>
   );

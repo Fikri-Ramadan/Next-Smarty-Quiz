@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../ui/card';
-import CustomWordCloud from './CustomWordCloud';
+import CustomWordCloud from '../CustomWordCloud';
 
 type Props = {};
 const HotTopicsCard = (props: Props) => {
