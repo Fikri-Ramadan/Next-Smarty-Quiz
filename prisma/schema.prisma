@@ -52,4 +52,40 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  game          Game[]
+}
+
+enum GameType {
+  mcq
+  open_ended
+}
+
+model Game {
+  id          String     @id @default(cuid())
+  userId      String
+  timeStarted DateTime
+  topic       String
+  timeEnded   DateTime?
+  gameType    GameType
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question    Question[]
+
+  @@index([userId])
+}
+
+model Question {
+  id                 String   @id @default(cuid())
+  question           String
+  answer             String
+  gameId             String
+  options            Json? // for mcq
+  percecntageCorrect Float? // for open_ended
+  isCorrect          Boolean?
+  questionType       GameType
+  userAnswer         String?
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@index([gameId])
 }
