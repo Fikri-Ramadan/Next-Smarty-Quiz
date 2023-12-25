@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from './ui/card';
-import { quizCreationSchema } from '@/app/schemas/form/quiz';
+import { quizCreationSchema } from '@/schemas/form/quiz';
 import {
   Form,
   FormControl,
@@ -24,10 +24,24 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 import { BookOpen, CopyCheck } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+
+type Input = z.infer<typeof quizCreationSchema>;
 
 type Props = {};
 const QuizCreation = (props: Props) => {
-  const form = useForm<z.infer<typeof quizCreationSchema>>({
+  const router = useRouter();
+
+  const { mutate: getQuestions, isPending } = useMutation({
+    mutationFn: async ({ amount, topic, type }: Input) => {
+      const response = await axios.post('/api/game', { amount, topic, type });
+      return response.data;
+    },
+  });
+
+  const form = useForm<Input>({
     resolver: zodResolver(quizCreationSchema),
     defaultValues: {
       topic: 'javascript',
@@ -36,8 +50,19 @@ const QuizCreation = (props: Props) => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof quizCreationSchema>) {
-    console.log(values);
+  function onSubmit({
+    amount,
+    topic,
+    type,
+  }: z.infer<typeof quizCreationSchema>) {
+    getQuestions(
+      { amount, topic, type },
+      {
+        onSuccess: ({ gameId }) => {
+          router.push(`/play/${type}/${gameId}`);
+        },
+      }
+    );
   }
 
   form.watch();
@@ -128,7 +153,9 @@ const QuizCreation = (props: Props) => {
                   Open Ended
                 </Button>
               </div>
-              <Button type="submit">Submit</Button>
+              <Button disabled={isPending} type="submit">
+                Submit
+              </Button>
             </form>
           </Form>
         </CardContent>

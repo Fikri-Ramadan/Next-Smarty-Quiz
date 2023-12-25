@@ -52,7 +52,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
-  game          Game[]
+  games          Game[]
 }
 
 enum GameType {
@@ -69,7 +69,7 @@ model Game {
   gameType    GameType
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  question    Question[]
+  questions    Question[]
 
   @@index([userId])
 }

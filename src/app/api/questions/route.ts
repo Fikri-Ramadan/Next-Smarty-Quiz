@@ -1,6 +1,5 @@
 import { quizCreationSchema } from "@/app/schemas/form/quiz";
 import { strictOutput } from "@/lib/gpt";
-import { getAuthSession } from "@/lib/nextAuth";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
