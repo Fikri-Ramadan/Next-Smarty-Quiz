@@ -1,4 +1,4 @@
-import { quizCreationSchema } from "@/app/schemas/form/quiz";
+import { quizCreationSchema } from "@/schemas/form/quiz";
 import { prisma } from "@/lib/db";
 import { getAuthSession } from "@/lib/nextAuth";
 import { NextResponse } from "next/server";
@@ -12,10 +12,9 @@ export const POST = async (req: Request, res: Response) => {
     return NextResponse.json({ error: "You must be logged in to access this quiz." }, { status: 401 });
   }
 
-  const body = await req.json();
-  const { amount, topic, type } = quizCreationSchema.parse(body);
-
   try {
+    const body = await req.json();
+    const { amount, topic, type } = quizCreationSchema.parse(body);
     const game = await prisma.game.create({
       data: {
         userId: session.user.id,

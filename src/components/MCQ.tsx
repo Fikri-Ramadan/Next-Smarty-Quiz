@@ -5,6 +5,7 @@ import { ChevronRight, Timer } from 'lucide-react';
 import { Card, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { useMemo, useState } from 'react';
+import MCQCounter from './MCQCounter';
 
 type Props = {
   game: Game & { questions: Pick<Question, 'id' | 'question' | 'options'>[] };
@@ -27,18 +28,21 @@ const MCQ = ({ game }: Props) => {
   return (
     <div className="mt-16 md:mt-32 mx-auto md:w-[80vw] max-w-4xl w-[90vw]">
       <div className="flex flex-row justify-between">
-        {/* topic */}
-        <div className="flex items-center">
-          <span className="text-slate-400 mr-2">Topic:</span>
-          <span className="py-1 px-2 bg-slate-800 text-white rounded-lg">
-            {game.topic}
-          </span>
+        <div>
+          {/* topic */}
+          <div className="flex items-center">
+            <span className="text-slate-400 mr-2">Topic:</span>
+            <span className="py-1 px-2 bg-slate-800 text-white rounded-lg">
+              {game.topic}
+            </span>
+          </div>
+          {/* timer */}
+          <div className="flex mt-3 text-slate-400">
+            <Timer className="mr-2" />
+            {'00.00'}
+          </div>
         </div>
-        {/* timer */}
-        <div className="flex mt-3 text-slate-400">
-          <Timer className="mr-2" />
-          {'00.00'}
-        </div>
+        <MCQCounter correctAnswer={3} wrongAnswer={5} />
       </div>
       <Card className="w-full mt-4">
         <CardHeader className="flex flex-row items-center">

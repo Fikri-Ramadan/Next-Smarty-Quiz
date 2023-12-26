@@ -1,4 +1,4 @@
-import { quizCreationSchema } from "@/app/schemas/form/quiz";
+import { quizCreationSchema } from "@/schemas/form/quiz";
 import { strictOutput } from "@/lib/gpt";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
