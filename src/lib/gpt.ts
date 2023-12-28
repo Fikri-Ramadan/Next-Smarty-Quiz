@@ -17,7 +17,7 @@ export async function strictOutput(
   model: string = 'gpt-3.5-turbo',
   temperature: number = 1,
   num_tries: number = 3,
-  verbose: boolean = true
+  verbose: boolean = false
 ): Promise<
   {
     question: String;
@@ -26,7 +26,7 @@ export async function strictOutput(
   // if the user input is in a list, we also process the output as a list of json
   const list_input: boolean = Array.isArray(user_prompt);
   // if the output format contains dynamic elements of < or >, then add to the prompt to handle dynamic elements
-  const dynamic_element: boolean = /<.*?>/.test(JSON.stringify(output_format));
+  const dynamic_elements: boolean = /<.*?>/.test(JSON.stringify(output_format));
   // if the output format contains list elements of [ or ], then we add to the prompt to handle lists
   const list_output: boolean = /\[.*?\]/.test(JSON.stringify(output_format));
 
@@ -39,20 +39,18 @@ export async function strictOutput(
     )}. \nDo not put quotation marks or escape character \\ in the output fields.`;
 
     if (list_output) {
-      output_format_prompt += `\nIf output field is a list, cassify output into the best element of the list`;
+      output_format_prompt += `\nIf output field is a list, classify output into the best element of the list.`;
     }
 
     // if output_format contains dynamic elements, process it accordingly
-    if (dynamic_element) {
-      output_format_prompt += `\nAny text anclosed by < and > indicates you must generate content to replace it. Example input: Go to <location>, Example output: Go to the garden\nAny output key containing < and > indicates you must generate the key name to replace it. Example input: {'<location>': 'description of location'}, Example output: {school: a place for education}`;
+    if (dynamic_elements) {
+      output_format_prompt += `\nAny text enclosed by < and > indicates you must generate content to replace it. Example input: Go to <location>, Example output: Go to the garden\nAny output key containing < and > indicates you must generate the key name to replace it. Example input: {'<location>': 'description of location'}, Example output: {school: a place for education}`;
     }
 
     // if input is in a list format, ask it to generate json in a list
     if (list_input) {
       output_format_prompt += `\nGenerate a list of json, one json for each input element.`;
     }
-
-    console.log(output_format_prompt)
 
     // use openAI to get a response
     const response = await openai.chat.completions.create({
@@ -70,7 +68,7 @@ export async function strictOutput(
       ],
     });
 
-    let res: string = response.choices[0].message?.content?.replace(/'/g, '"') ?? "";
+    let res: string = response.choices[0].message?.content ?? "";
 
     // ensure that we don't replace away apostrophes in text
     res = res.replace(/(\w)"(\w)/g, "$1'$2");
@@ -86,7 +84,7 @@ export async function strictOutput(
 
     // try-catch block to ensure output format is adhered to
     try {
-      let output: any = await JSON.parse(res);
+      let output: any = JSON.parse(res);
 
       if (list_input) {
         if (!Array.isArray(output)) {
@@ -99,7 +97,7 @@ export async function strictOutput(
       // check for each element in the output_list, the format is correctly adhered to
       for (let index = 0; index < output.length; index++) {
         for (const key in output_format) {
-          // unable to ensure accuracy of dynamic output headerm so skip it
+          // unable to ensure accuracy of dynamic output header, so skip it
           if (/<.*?>/.test(key)) {
             continue;
           }
@@ -119,7 +117,7 @@ export async function strictOutput(
             }
 
             // output the default category (if any) if GPT is unable to identify the category
-            if (!choices.includes(output[index][key][0])) {
+            if (!choices.includes(output[index][key]) && default_category) {
               output[index][key] = default_category;
             }
 

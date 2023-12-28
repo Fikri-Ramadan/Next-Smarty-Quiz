@@ -18,26 +18,26 @@ export const POST = async (req: Request, res: Response) => {
       return NextResponse.json({ error: "question not found" }, { status: 404 });
     }
 
-    // await prisma.question.update({
-    //   where: {
-    //     id: questionId
-    //   },
-    //   data: {
-    //     userAnswer,
-    //   }
-    // });
+    await prisma.question.update({
+      where: {
+        id: questionId
+      },
+      data: {
+        userAnswer,
+      }
+    });
 
     if (question.questionType === 'mcq') {
       const isCorrect = userAnswer.toLowerCase().trim() === question.answer.toLowerCase().trim();
 
-      // await prisma.question.update({
-      //   where: {
-      //     id: questionId
-      //   },
-      //   data: {
-      //     isCorrect,
-      //   }
-      // });
+      await prisma.question.update({
+        where: {
+          id: questionId
+        },
+        data: {
+          isCorrect,
+        }
+      });
 
       return NextResponse.json({
         isCorrect

@@ -64,7 +64,7 @@ export const POST = async (req: Request, res: Response) => {
         answer: string,
       };
 
-      const datas = data.question.map((question: openQuestion) => {
+      const datas = data.questions.map((question: openQuestion) => {
         return {
           question: question.question,
           answer: question.answer,

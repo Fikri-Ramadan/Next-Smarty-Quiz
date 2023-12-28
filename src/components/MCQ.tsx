@@ -130,7 +130,10 @@ const MCQ = ({ game }: Props) => {
           You completed in{' '}
           {formatTimeDelta(differenceInSeconds(now, game.timeStarted))}
         </div>
-        <Link href={''} className={cn(buttonVariants(), 'mt-2')}>
+        <Link
+          href={`/statistics/${game.id}`}
+          className={cn(buttonVariants(), 'mt-2')}
+        >
           View Statistics
           <BarChart className="w-4 h-4 ml-2" />
         </Link>
@@ -166,7 +169,7 @@ const MCQ = ({ game }: Props) => {
             </div>
           </CardTitle>
           <CardDescription className="flex-grow text-lg">
-            {game.questions[0].question}
+            {currentQuestion.question}
           </CardDescription>
         </CardHeader>
       </Card>
