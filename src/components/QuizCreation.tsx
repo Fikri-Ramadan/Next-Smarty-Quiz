@@ -59,7 +59,11 @@ const QuizCreation = (props: Props) => {
       { amount, topic, type },
       {
         onSuccess: ({ gameId }) => {
-          router.push(`/play/${type}/${gameId}`);
+          if (type === 'mcq') {
+            return router.push(`/play/mcq/${gameId}`);
+          } else if (type === 'open_ended') {
+            return router.push(`/play/open-ended/${gameId}`);
+          }
         },
       }
     );
