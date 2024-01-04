@@ -5,7 +5,7 @@ type Props = {
   accuracy: number;
 };
 
-const ResultCard = async ({ accuracy }: Props) => {
+const ResultCard = ({ accuracy }: Props) => {
   return (
     <Card className="md:col-span-7">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">

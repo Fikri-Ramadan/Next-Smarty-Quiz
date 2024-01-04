@@ -1,5 +1,7 @@
 import AccuracyCard from '@/components/statistics/AccuracyCard';
+import QuestionList from '@/components/statistics/QuestionList';
 import ResultCard from '@/components/statistics/ResultCard';
+import TimeTakenCard from '@/components/statistics/TimeTakeCard';
 import { buttonVariants } from '@/components/ui/button';
 import { prisma } from '@/lib/db';
 import { getAuthSession } from '@/lib/nextAuth';
@@ -49,6 +51,8 @@ const StatisticPage = async ({ params: { gameId } }: Props) => {
     accuracy = averagePercentage / game.questions.length;
   }
 
+  accuracy = Math.round(accuracy * 100) / 100;
+
   return (
     <div className="p-8 mx-auto max-w-7xl">
       <div className="flex flex-col gap-4 items-center justify-between md:flex-row">
@@ -64,10 +68,13 @@ const StatisticPage = async ({ params: { gameId } }: Props) => {
       <div className="grid gap-4 mt-4 md:grid-cols-7">
         <ResultCard accuracy={accuracy} />
         <AccuracyCard accuracy={accuracy} />
-        {/* <TimeTakenCard /> */}
+        <TimeTakenCard
+          timeStarted={new Date(game.timeStarted || 0)}
+          timeEnded={new Date(game.timeEnded || 0)}
+        />
       </div>
 
-      {/* <QuestionList /> */}
+      <QuestionList questions={game.questions} />
     </div>
   );
 };

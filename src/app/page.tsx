@@ -13,7 +13,7 @@ export default async function Home() {
   const session = await getAuthSession();
 
   if (session?.user) {
-    return redirect('/');
+    return redirect('/dashboard');
   }
 
   return (

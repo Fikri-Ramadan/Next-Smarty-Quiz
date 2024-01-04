@@ -72,7 +72,7 @@ const QuizCreation = (props: Props) => {
   form.watch();
 
   return (
-    <div className="absolute -translate-x-1/2 -transalte-y-1/2 top-0 left-1/2 pt-32 w-10/12 md:w-auto">
+    <div className="absolute -translate-x-1/2 -transalte-y-1/2 top-0 left-1/2 pt-32 w-10/12 md:w-auto pb-8">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Quiz Creation</CardTitle>
