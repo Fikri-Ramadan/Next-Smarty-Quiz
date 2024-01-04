@@ -178,7 +178,7 @@ const MCQ = ({ game }: Props) => {
           return (
             <Button
               key={index}
-              className="mb-4 py-8 w-full justify-start"
+              className="mb-4 py-8 w-full justify-start h-fit"
               variant={selectedChoices === index ? 'default' : 'outline'}
               onClick={() => {
                 setSelectedChoices(index);

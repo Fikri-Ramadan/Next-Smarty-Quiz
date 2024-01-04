@@ -1,3 +1,4 @@
+import AccuracyCard from '@/components/statistics/AccuracyCard';
 import ResultCard from '@/components/statistics/ResultCard';
 import { buttonVariants } from '@/components/ui/button';
 import { prisma } from '@/lib/db';
@@ -21,10 +22,31 @@ const StatisticPage = async ({ params: { gameId } }: Props) => {
     where: {
       id: gameId,
     },
+    include: {
+      questions: true,
+    },
   });
 
   if (!game) {
     return redirect('/dashboard');
+  }
+
+  let accuracy: number = 0;
+  if (game.gameType === 'mcq') {
+    let totalCorrect = game.questions.reduce((acc, question) => {
+      if (question.isCorrect) {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
+
+    accuracy = (totalCorrect / game.questions.length) * 100;
+  } else if (game.gameType === 'open_ended') {
+    let averagePercentage = game.questions.reduce((acc, question) => {
+      return acc + (question.percentageCorrect || 0);
+    }, 0);
+
+    accuracy = averagePercentage / game.questions.length;
   }
 
   return (
@@ -40,8 +62,8 @@ const StatisticPage = async ({ params: { gameId } }: Props) => {
       </div>
 
       <div className="grid gap-4 mt-4 md:grid-cols-7">
-        <ResultCard accuracy={25} />
-        {/* <AccuracyCard /> */}
+        <ResultCard accuracy={accuracy} />
+        <AccuracyCard accuracy={accuracy} />
         {/* <TimeTakenCard /> */}
       </div>
 
