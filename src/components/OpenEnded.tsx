@@ -23,6 +23,7 @@ type Props = {
 export const OpenEnded = ({ game }: Props) => {
   const [questionIndex, setQuestionIndex] = useState<number>(0);
   const [gameIsEnded, setGameIsEnded] = useState<boolean>(false);
+  const [blankAnswer, setBlankAnswer] = useState<string>('');
   const [now, setNow] = useState(new Date());
 
   const { toast } = useToast();
@@ -33,9 +34,15 @@ export const OpenEnded = ({ game }: Props) => {
 
   const { mutate: checkAnswer, isPending: isChecking } = useMutation({
     mutationFn: async () => {
+      let filledAnswer = blankAnswer;
+      document.querySelectorAll('#user-blank-input').forEach(input => {
+        filledAnswer = filledAnswer.replace('_____', (input as HTMLInputElement).value);
+        (input as HTMLInputElement).value = ''
+      });
+
       const payload: z.infer<typeof checkAnswerSchema> = {
         questionId: currentQuestion.id,
-        userAnswer: '',
+        userAnswer: filledAnswer,
       };
 
       const response = await axios.post(`/api/checkAnswer`, payload);
@@ -68,7 +75,7 @@ export const OpenEnded = ({ game }: Props) => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'enter') {
+      if (event.key === 'Enter') {
         handleNext();
       }
     };
@@ -136,7 +143,7 @@ export const OpenEnded = ({ game }: Props) => {
         </CardHeader>
       </Card>
       <div className="flex flex-col justify-center items-center mt-4 w-full">
-        <BlankInputAnswer answer={currentQuestion.answer} />
+        <BlankInputAnswer answer={currentQuestion.answer} setBlankAnswer={setBlankAnswer} />
         <Button
           className="mt-2 mb-32"
           variant={'default'}

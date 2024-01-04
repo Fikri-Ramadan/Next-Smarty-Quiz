@@ -1,15 +1,16 @@
 'use client';
 
-import { Fragment, useMemo } from 'react';
+import { Dispatch, Fragment, SetStateAction, useMemo } from 'react';
 import keywordExtractor from 'keyword-extractor';
 
 type Props = {
   answer: string;
+  setBlankAnswer: Dispatch<SetStateAction<string>>;
 };
 
 const BLANK = '_____';
 
-const BlankInputAnswer = ({ answer }: Props) => {
+const BlankInputAnswer = ({ answer, setBlankAnswer }: Props) => {
   const keywords = useMemo(() => {
     const words = keywordExtractor.extract(answer, {
       language: 'english',
@@ -29,8 +30,10 @@ const BlankInputAnswer = ({ answer }: Props) => {
       return acc.replaceAll(curr, BLANK);
     }, answer);
 
+    setBlankAnswer(answerWithBlanks);
+
     return answerWithBlanks;
-  }, [keywords, answer]);
+  }, [keywords, answer, setBlankAnswer]);
 
   return (
     <div className="flex flex-row justify-start w-full mb-4">
