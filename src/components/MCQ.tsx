@@ -14,6 +14,7 @@ import { useToast } from './ui/use-toast';
 import Link from 'next/link';
 import { cn, formatTimeDelta } from '@/lib/utils';
 import { differenceInSeconds } from 'date-fns';
+import { endGameSchema } from '@/schemas/question';
 
 type Props = {
   game: Game & { questions: Pick<Question, 'id' | 'question' | 'options'>[] };
@@ -46,7 +47,25 @@ const MCQ = ({ game }: Props) => {
         userAnswer: options[selectedChoices],
       };
 
-      const response = await axios.post(`/api/checkAnswer`, payload);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API}/api/checkAnswer`,
+        payload
+      );
+
+      return response.data;
+    },
+  });
+
+  const { mutate: endGame } = useMutation({
+    mutationFn: async () => {
+      const payload: z.infer<typeof endGameSchema> = {
+        gameId: game.id,
+      };
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API}/api/endGame`,
+        payload
+      );
 
       return response.data;
     },
@@ -80,6 +99,7 @@ const MCQ = ({ game }: Props) => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         if (questionIndex === game.questions.length - 1) {
+          endGame();
           setGameIsEnded(true);
           return;
         }
@@ -88,7 +108,7 @@ const MCQ = ({ game }: Props) => {
         setQuestionIndex((prev) => prev + 1);
       },
     });
-  }, [checkAnswer, isChecking, toast, game.questions.length, questionIndex]);
+  }, [checkAnswer, isChecking, toast, game.questions.length, questionIndex, endGame]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

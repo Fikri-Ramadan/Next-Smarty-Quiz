@@ -36,7 +36,10 @@ const QuizCreation = (props: Props) => {
 
   const { mutate: getQuestions, isPending } = useMutation({
     mutationFn: async ({ amount, topic, type }: Input) => {
-      const response = await axios.post('/api/game', { amount, topic, type });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API}/api/game`,
+        { amount, topic, type }
+      );
       return response.data;
     },
   });
@@ -44,7 +47,7 @@ const QuizCreation = (props: Props) => {
   const form = useForm<Input>({
     resolver: zodResolver(quizCreationSchema),
     defaultValues: {
-      topic: 'javascript',
+      topic: '',
       amount: 3,
       type: 'mcq',
     },

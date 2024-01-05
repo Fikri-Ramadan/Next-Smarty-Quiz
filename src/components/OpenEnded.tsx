@@ -15,6 +15,7 @@ import { useToast } from './ui/use-toast';
 import Link from 'next/link';
 import BlankInputAnswer from './BlankInputAnswer';
 import OpenEndedPercentage from './OpenEndedPercentage';
+import { endGameSchema } from '@/schemas/question';
 
 type Props = {
   game: Game & { questions: Pick<Question, 'id' | 'question' | 'answer'>[] };
@@ -35,9 +36,12 @@ export const OpenEnded = ({ game }: Props) => {
   const { mutate: checkAnswer, isPending: isChecking } = useMutation({
     mutationFn: async () => {
       let filledAnswer = blankAnswer;
-      document.querySelectorAll('#user-blank-input').forEach(input => {
-        filledAnswer = filledAnswer.replace('_____', (input as HTMLInputElement).value);
-        (input as HTMLInputElement).value = ''
+      document.querySelectorAll('#user-blank-input').forEach((input) => {
+        filledAnswer = filledAnswer.replace(
+          '_____',
+          (input as HTMLInputElement).value
+        );
+        (input as HTMLInputElement).value = '';
       });
 
       const payload: z.infer<typeof checkAnswerSchema> = {
@@ -45,7 +49,25 @@ export const OpenEnded = ({ game }: Props) => {
         userAnswer: filledAnswer,
       };
 
-      const response = await axios.post(`/api/checkAnswer`, payload);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API}/api/checkAnswer`,
+        payload
+      );
+
+      return response.data;
+    },
+  });
+
+  const { mutate: endGame } = useMutation({
+    mutationFn: async () => {
+      const payload: z.infer<typeof endGameSchema> = {
+        gameId: game.id,
+      };
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API}/api/endGame`,
+        payload
+      );
 
       return response.data;
     },
@@ -64,6 +86,7 @@ export const OpenEnded = ({ game }: Props) => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         if (questionIndex === game.questions.length - 1) {
+          endGame();
           setGameIsEnded(true);
           return;
         }
@@ -71,7 +94,7 @@ export const OpenEnded = ({ game }: Props) => {
         setQuestionIndex((prev) => prev + 1);
       },
     });
-  }, [checkAnswer, isChecking, toast, game.questions.length, questionIndex]);
+  }, [checkAnswer, isChecking, toast, game.questions.length, questionIndex, endGame]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -143,7 +166,10 @@ export const OpenEnded = ({ game }: Props) => {
         </CardHeader>
       </Card>
       <div className="flex flex-col justify-center items-center mt-4 w-full">
-        <BlankInputAnswer answer={currentQuestion.answer} setBlankAnswer={setBlankAnswer} />
+        <BlankInputAnswer
+          answer={currentQuestion.answer}
+          setBlankAnswer={setBlankAnswer}
+        />
         <Button
           className="mt-2 mb-32"
           variant={'default'}
