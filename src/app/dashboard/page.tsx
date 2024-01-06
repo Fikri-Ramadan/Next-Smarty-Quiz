@@ -32,7 +32,7 @@ const Dashboard = async (props: Props) => {
 
       <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <HotTopicsCard />
-        <RecentAcitivityCard />
+        <RecentAcitivityCard userId={session.user.id} />
       </div>
     </main>
   );
