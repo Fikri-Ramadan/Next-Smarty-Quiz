@@ -15,6 +15,12 @@ export const POST = async (req: Request, res: Response) => {
   try {
     const body = await req.json();
     const { amount, topic, type } = quizCreationSchema.parse(body);
+
+    const { data } = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_API}/api/questions`,
+      { topic, amount, type }
+    );
+
     const game = await prisma.game.create({
       data: {
         userId: session.user.id,
@@ -23,11 +29,6 @@ export const POST = async (req: Request, res: Response) => {
         topic,
       }
     });
-
-    const { data } = await axios.post(
-      `${process.env.NEXT_PUBLIC_BASE_API}/api/questions`,
-      { topic, amount, type }
-    );
 
     if (type === 'mcq') {
       type mcqQuestion = {

@@ -108,7 +108,14 @@ const MCQ = ({ game }: Props) => {
         setQuestionIndex((prev) => prev + 1);
       },
     });
-  }, [checkAnswer, isChecking, toast, game.questions.length, questionIndex, endGame]);
+  }, [
+    checkAnswer,
+    isChecking,
+    toast,
+    game.questions.length,
+    questionIndex,
+    endGame,
+  ]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

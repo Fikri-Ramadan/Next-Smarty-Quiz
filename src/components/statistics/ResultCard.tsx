@@ -16,9 +16,9 @@ const ResultCard = ({ accuracy }: Props) => {
         {accuracy === 100 ? (
           <>
             <Trophy stroke="gold" size={50} />
-            <div className="flex flex-col items-center font-semibold text-2xl text-yellow-400">
-              <span>Perfect!</span>
-              <span className="text-sm text-center text-black opacity-50">
+            <div className="flex flex-col items-center font-semibold text-2xl">
+              <span className="text-yellow-400">Perfect!</span>
+              <span className="text-sm text-center opacity-50">
                 100% Accuracy
               </span>
             </div>
@@ -26,9 +26,9 @@ const ResultCard = ({ accuracy }: Props) => {
         ) : accuracy > 75 ? (
           <>
             <Trophy stroke="green" size={50} />
-            <div className="flex flex-col items-center font-semibold text-2xl text-green-400">
-              <span>Imersive!</span>
-              <span className="text-sm text-center text-black opacity-50">
+            <div className="flex flex-col items-center font-semibold text-2xl">
+              <span className="text-green-400">Imersive!</span>
+              <span className="text-sm text-center opacity-50">
                 {'> 75% Accuracy'}
               </span>
             </div>
@@ -36,9 +36,9 @@ const ResultCard = ({ accuracy }: Props) => {
         ) : accuracy > 25 ? (
           <>
             <Trophy stroke="silver" size={50} />
-            <div className="flex flex-col items-center font-semibold text-2xl text-stone-400">
-              <span>Good Job!</span>
-              <span className="text-sm text-center text-black opacity-50">
+            <div className="flex flex-col items-center font-semibold text-2xl">
+              <span className="text-stone-400">Good Job!</span>
+              <span className="text-sm text-center opacity-50">
                 {'> 25% Accuracy'}
               </span>
             </div>
@@ -46,9 +46,9 @@ const ResultCard = ({ accuracy }: Props) => {
         ) : (
           <>
             <Trophy stroke="brown" size={50} />
-            <div className="flex flex-col items-center font-semibold text-2xl text-yellow-800">
-              <span>Nice Try!</span>
-              <span className="text-sm text-center text-black opacity-50">
+            <div className="flex flex-col items-center font-semibold text-2xl">
+              <span className="text-yellow-800">Nice Try!</span>
+              <span className="text-sm text-center opacity-50">
                 {'< 25% Accuracy'}
               </span>
             </div>

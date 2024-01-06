@@ -25,6 +25,7 @@ export const OpenEnded = ({ game }: Props) => {
   const [questionIndex, setQuestionIndex] = useState<number>(0);
   const [gameIsEnded, setGameIsEnded] = useState<boolean>(false);
   const [blankAnswer, setBlankAnswer] = useState<string>('');
+  const [totalPercentage, setTotalPercentage] = useState<number>(0);
   const [now, setNow] = useState(new Date());
 
   const { toast } = useToast();
@@ -77,11 +78,13 @@ export const OpenEnded = ({ game }: Props) => {
     if (isChecking) return;
 
     checkAnswer(undefined, {
-      onSuccess: ({ percentageSimilar }) => {
+      onSuccess: async ({ percentageSimilar }) => {
         toast({
           title: `Your answer is ${percentageSimilar}% similar to the correct answer.`,
           description: 'answers are matched based on similarity comparisons.',
         });
+
+        setTotalPercentage((prev) => prev + percentageSimilar);
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -94,7 +97,14 @@ export const OpenEnded = ({ game }: Props) => {
         setQuestionIndex((prev) => prev + 1);
       },
     });
-  }, [checkAnswer, isChecking, toast, game.questions.length, questionIndex, endGame]);
+  }, [
+    checkAnswer,
+    isChecking,
+    toast,
+    game.questions.length,
+    questionIndex,
+    endGame,
+  ]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -150,7 +160,7 @@ export const OpenEnded = ({ game }: Props) => {
             {formatTimeDelta(differenceInSeconds(now, game.timeStarted))}
           </div>
         </div>
-        <OpenEndedPercentage percentage={23} />
+        <OpenEndedPercentage percentage={totalPercentage / questionIndex} />
       </div>
       <Card className="w-full mt-4">
         <CardHeader className="flex flex-row items-center">

@@ -27,12 +27,16 @@ import { BookOpen, CopyCheck } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import LoadingQuestion from './LoadingQuestion';
 
 type Input = z.infer<typeof quizCreationSchema>;
 
 type Props = {};
 const QuizCreation = (props: Props) => {
   const router = useRouter();
+  const [showLoader, setShowLoader] = useState<boolean>(false);
+  const [finishedLoading, setFinishedLoading] = useState<boolean>(false);
 
   const { mutate: getQuestions, isPending } = useMutation({
     mutationFn: async ({ amount, topic, type }: Input) => {
@@ -58,21 +62,30 @@ const QuizCreation = (props: Props) => {
     topic,
     type,
   }: z.infer<typeof quizCreationSchema>) {
+    setShowLoader(true);
     getQuestions(
       { amount, topic, type },
       {
         onSuccess: ({ gameId }) => {
-          if (type === 'mcq') {
-            return router.push(`/play/mcq/${gameId}`);
-          } else if (type === 'open_ended') {
-            return router.push(`/play/open-ended/${gameId}`);
-          }
+          setFinishedLoading(true);
+          setTimeout(() => {
+            if (type === 'mcq') {
+              return router.push(`/play/mcq/${gameId}`);
+            } else if (type === 'open_ended') {
+              return router.push(`/play/open-ended/${gameId}`);
+            }
+          }, 2000);
         },
+        onError: () => setShowLoader(false),
       }
     );
   }
 
   form.watch();
+
+  if (showLoader) {
+    return <LoadingQuestion finished={finishedLoading} />;
+  }
 
   return (
     <div className="absolute -translate-x-1/2 -transalte-y-1/2 top-0 left-1/2 pt-32 w-10/12 md:w-auto pb-8">
