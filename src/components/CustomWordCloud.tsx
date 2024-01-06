@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import D3WordCloud from 'react-d3-cloud';
 
 type Props = {
@@ -21,6 +21,9 @@ const CustomWordCloud = ({ formattedTopics }: Props) => {
   const router = useRouter();
 
   const [isLoading, setLoading] = useState(true);
+  const [textColor, setTextColor] = useState(
+    theme.systemTheme == 'dark' ? 'black' : 'white'
+  );
 
   useEffect(() => {
     if (typeof window !== undefined) {
@@ -28,9 +31,26 @@ const CustomWordCloud = ({ formattedTopics }: Props) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (
+      theme.theme === 'dark' ||
+      (theme.theme === 'system' && theme.systemTheme === 'dark')
+    ) {
+      setTextColor('white');
+    }
+
+    if (
+      theme.theme === 'light' ||
+      (theme.theme === 'system' && theme.systemTheme === 'light')
+    ) {
+      setTextColor('black');
+    }
+  }, [theme.theme, theme.systemTheme]);
+
   if (isLoading) {
     return <>Loading...</>;
   }
+
   return (
     <>
       <D3WordCloud
@@ -40,7 +60,7 @@ const CustomWordCloud = ({ formattedTopics }: Props) => {
         fontSize={fontSizeMapper}
         rotate={0}
         padding={10}
-        fill={theme.theme === 'dark' ? 'white' : 'black'}
+        fill={textColor}
         onWordClick={(e, d) => {
           router.push('/quiz?topic=' + d.text);
         }}

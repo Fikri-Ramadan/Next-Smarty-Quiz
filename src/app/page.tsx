@@ -23,7 +23,7 @@ export default async function Home() {
           <CardTitle>Welcome to Smarty Quiz!</CardTitle>
           <CardDescription>
             Smarty Quiz is a platform for creating quizzes using AI!. Get
-            started by loggin in below!
+            started by logged in below!
           </CardDescription>
         </CardHeader>
         <CardContent>
