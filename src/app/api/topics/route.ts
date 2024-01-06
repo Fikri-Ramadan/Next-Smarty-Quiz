@@ -11,6 +11,7 @@ export const GET = async (_req: Request, _res: Response) => {
 
     return NextResponse.json({ topics }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    console.log(error);
+    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 };

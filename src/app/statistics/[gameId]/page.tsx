@@ -5,6 +5,8 @@ import TimeTakenCard from '@/components/statistics/TimeTakeCard';
 import { buttonVariants } from '@/components/ui/button';
 import { prisma } from '@/lib/db';
 import { getAuthSession } from '@/lib/nextAuth';
+import { Game, Question } from '@prisma/client';
+import axios from 'axios';
 import { LucideLayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -13,6 +15,7 @@ type Props = {
   params: { gameId: string };
 };
 
+type GameType = Game & { questions: Question[] };
 const StatisticPage = async ({ params: { gameId } }: Props) => {
   const session = await getAuthSession();
 
@@ -20,14 +23,11 @@ const StatisticPage = async ({ params: { gameId } }: Props) => {
     return redirect('/');
   }
 
-  const game = await prisma.game.findUnique({
-    where: {
-      id: gameId,
-    },
-    include: {
-      questions: true,
-    },
-  });
+  const { data } = await axios.get(
+    `${process.env.NEXT_PUBLIC_BASE_API}/api/game?gameId=${gameId}`
+  );
+
+  const game: GameType = data.game;
 
   if (!game) {
     return redirect('/dashboard');

@@ -103,3 +103,34 @@ export const POST = async (req: Request, res: Response) => {
     return NextResponse.json({ error: 'Something went wrong!' }, { status: 500 });
   }
 };
+
+export const GET = async (req: Request, res: Response) => {
+  try {
+    const url = new URL(req.url);
+    const gameId = url.searchParams.get('gameId');
+
+    if (!gameId) {
+      return NextResponse.json({ error: 'You must be provide a gameId.' }, { status: 400 });
+    }
+
+    const game = await prisma.game.findUnique({
+      where: {
+        id: gameId
+      },
+      include: {
+        questions: true
+      }
+    });
+
+    if (!game) {
+      return NextResponse.json({ error: 'Game not found.' }, { status: 404 });
+    }
+
+    return NextResponse.json({ game }, { status: 200 });
+
+    return NextResponse.json({ message: 'success' }, { status: 200 });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+  }
+};

@@ -19,6 +19,7 @@ export const POST = async (req: Request, res: Response) => {
 
     return NextResponse.json({ history }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    console.log(error);
+    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 };
