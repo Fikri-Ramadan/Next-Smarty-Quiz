@@ -5,31 +5,18 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import D3WordCloud from 'react-d3-cloud';
 
-type Props = {};
-
-const data = [
-  { text: 'NextJS', value: 16 },
-  { text: 'Spring Boot', value: 32 },
-  { text: 'ReactJS', value: 4 },
-  { text: 'ExpressJS', value: 6 },
-  { text: 'Typescript', value: 102 },
-  { text: 'NextJS', value: 16 },
-  { text: 'Spring Boot', value: 32 },
-  { text: 'ReactJS', value: 4 },
-  { text: 'ExpressJS', value: 6 },
-  { text: 'Typescript', value: 102 },
-  { text: 'NextJS', value: 16 },
-  { text: 'Spring Boot', value: 32 },
-  { text: 'ReactJS', value: 4 },
-  { text: 'ExpressJS', value: 6 },
-  { text: 'Typescript', value: 102 },
-];
+type Props = {
+  formattedTopics: {
+    text: string;
+    value: number;
+  }[];
+};
 
 const fontSizeMapper = (word: { value: number }) => {
   return Math.log2(word.value) * 5 + 16;
 };
 
-const CustomWordCloud = (props: Props) => {
+const CustomWordCloud = ({ formattedTopics }: Props) => {
   const theme = useTheme();
   const router = useRouter();
 
@@ -47,7 +34,7 @@ const CustomWordCloud = (props: Props) => {
   return (
     <>
       <D3WordCloud
-        data={data}
+        data={formattedTopics}
         height={550}
         font="Times"
         fontSize={fontSizeMapper}

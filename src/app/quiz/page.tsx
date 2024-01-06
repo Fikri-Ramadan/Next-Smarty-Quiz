@@ -6,15 +6,19 @@ export const metadata = {
   title: 'Quiz | Smarty Quiz',
 };
 
-type Props = {};
+type Props = {
+  searchParams: {
+    topic?: string;
+  };
+};
 
-const QuizPage = async (props: Props) => {
+const QuizPage = async ({ searchParams: { topic } }: Props) => {
   const session = await getAuthSession();
 
   if (!session?.user) {
     return redirect('/');
   }
 
-  return <QuizCreation />;
+  return <QuizCreation topicParams={topic || ''} />;
 };
 export default QuizPage;

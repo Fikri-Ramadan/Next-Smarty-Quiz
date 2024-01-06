@@ -21,6 +21,21 @@ export const POST = async (req: Request, res: Response) => {
       { topic, amount, type }
     );
 
+    await prisma.topicCount.upsert({
+      where: {
+        topic: topic,
+      },
+      create: {
+        topic,
+        count: 1
+      },
+      update: {
+        count: {
+          increment: 1
+        }
+      },
+    });
+
     const game = await prisma.game.create({
       data: {
         userId: session.user.id,

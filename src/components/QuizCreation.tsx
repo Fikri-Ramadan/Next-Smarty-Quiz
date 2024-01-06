@@ -32,8 +32,10 @@ import LoadingQuestion from './LoadingQuestion';
 
 type Input = z.infer<typeof quizCreationSchema>;
 
-type Props = {};
-const QuizCreation = (props: Props) => {
+type Props = {
+  topicParams: string;
+};
+const QuizCreation = ({ topicParams }: Props) => {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState<boolean>(false);
   const [finishedLoading, setFinishedLoading] = useState<boolean>(false);
@@ -51,7 +53,7 @@ const QuizCreation = (props: Props) => {
   const form = useForm<Input>({
     resolver: zodResolver(quizCreationSchema),
     defaultValues: {
-      topic: '',
+      topic: topicParams,
       amount: 3,
       type: 'mcq',
     },

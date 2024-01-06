@@ -6,9 +6,20 @@ import {
   CardTitle,
 } from '../ui/card';
 import CustomWordCloud from '../CustomWordCloud';
+import axios from 'axios';
+import { TopicCount } from '@prisma/client';
 
 type Props = {};
-const HotTopicsCard = (props: Props) => {
+const HotTopicsCard = async (props: Props) => {
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API}/api/topics`);
+  const topics: TopicCount[] = await res.data.topics;
+  const formattedTopics = topics.map((topic) => {
+    return {
+      text: topic.topic,
+      value: topic.count,
+    };
+  });
+
   return (
     <Card className="col-span-4">
       <CardHeader>
@@ -18,7 +29,7 @@ const HotTopicsCard = (props: Props) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="pl-2">
-        <CustomWordCloud />
+        <CustomWordCloud formattedTopics={formattedTopics} />
       </CardContent>
     </Card>
   );
