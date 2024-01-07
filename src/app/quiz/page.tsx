@@ -19,6 +19,6 @@ const QuizPage = async ({ searchParams: { topic } }: Props) => {
     return redirect('/');
   }
 
-  return <QuizCreation topicParams={topic || ''} />;
+  return <QuizCreation topicParams={topic || ''} userId={session.user.id} />;
 };
 export default QuizPage;

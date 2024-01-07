@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db";
-import { getAuthSession } from "@/lib/nextAuth";
 import { NextResponse } from "next/server";
 
 export const POST = async (req: Request, res: Response) => {

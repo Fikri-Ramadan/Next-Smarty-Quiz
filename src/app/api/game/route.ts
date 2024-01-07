@@ -1,6 +1,4 @@
-import { quizCreationSchema } from "@/schemas/form/quiz";
 import { prisma } from "@/lib/db";
-import { getAuthSession } from "@/lib/nextAuth";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import axios from 'axios';
@@ -8,15 +6,9 @@ import axios from 'axios';
 export const runtime = 'edge';
 
 export const POST = async (req: Request, res: Response) => {
-  const session = await getAuthSession();
-
-  if (!session?.user) {
-    return NextResponse.json({ error: "You must be logged in to access this quiz." }, { status: 401 });
-  }
-
   try {
     const body = await req.json();
-    const { amount, topic, type } = quizCreationSchema.parse(body);
+    const { amount, topic, type, userId } = body;
 
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_BASE_API}/api/questions`,
@@ -40,7 +32,7 @@ export const POST = async (req: Request, res: Response) => {
 
     const game = await prisma.game.create({
       data: {
-        userId: session.user.id,
+        userId: userId,
         gameType: type,
         timeStarted: new Date(),
         topic,

@@ -34,8 +34,9 @@ type Input = z.infer<typeof quizCreationSchema>;
 
 type Props = {
   topicParams: string;
+  userId: string;
 };
-const QuizCreation = ({ topicParams }: Props) => {
+const QuizCreation = ({ topicParams, userId }: Props) => {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState<boolean>(false);
   const [finishedLoading, setFinishedLoading] = useState<boolean>(false);
@@ -44,7 +45,7 @@ const QuizCreation = ({ topicParams }: Props) => {
     mutationFn: async ({ amount, topic, type }: Input) => {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_API}/api/game`,
-        { amount, topic, type }
+        { amount, topic, type, userId }
       );
       return response.data;
     },
