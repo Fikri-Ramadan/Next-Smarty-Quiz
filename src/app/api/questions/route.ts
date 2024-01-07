@@ -3,6 +3,8 @@ import { strictOutput } from "@/lib/gpt";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
+export const runtime = 'edge';
+
 export const POST = async (req: Request, res: Response) => {
   try {
     // const session = await getAuthSession();
