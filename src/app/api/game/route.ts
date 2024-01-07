@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
-import axios from 'axios';
 
 export const runtime = 'edge';
 
@@ -10,10 +9,12 @@ export const POST = async (req: Request, res: Response) => {
     const body = await req.json();
     const { amount, topic, type, userId } = body;
 
-    const { data } = await axios.post(
-      `${process.env.NEXT_PUBLIC_BASE_API}/api/questions`,
-      { topic, amount, type }
-    );
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/api/questions`, {
+      method: 'POST',
+      body: JSON.stringify({ topic, amount, type })
+    });
+
+    const data = await response.json();
 
     await prisma.topicCount.upsert({
       where: {
@@ -93,6 +94,8 @@ export const POST = async (req: Request, res: Response) => {
     if (error instanceof ZodError) {
       return NextResponse.json({ error: error.issues }, { status: 400 });
     }
+
+    console.log(error);
 
     return NextResponse.json({ error: 'Something went wrong!' }, { status: 500 });
   }
