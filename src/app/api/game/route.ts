@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import axios from 'axios';
 
+export const runtime = 'edge';
+
 export const POST = async (req: Request, res: Response) => {
   const session = await getAuthSession();
 
